@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ user.username }}'s Profile | HotelEase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen">
+
+<!-- Navbar (same as home) -->
+<nav class="bg-white shadow p-4 flex justify-between items-center rounded-b-xl">
+  <div class="text-xl font-bold text-pink-700">🏨 HotelEase</div>
+  <div class="space-x-4 hidden md:flex">
+    {% for city in cities %}
+      <a href="{{ url_for('main.hotel_list', city=city) }}" class="text-gray-700 hover:text-purple-600">{{ city }}</a>
+    {% endfor %}
+  </div>
+  <a href="{{ url_for('main.logout') }}" class="text-sm text-purple-500 hover:underline">Logout</a>
+</nav>
+
+<!-- Profile Header -->
+<section class="text-center mt-10">
+  <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ user.username }}" alt="avatar"
+       class="mx-auto w-28 h-28 rounded-full shadow-md mb-4">
+  <h2 class="text-3xl font-bold text-purple-700">Welcome, {{ user.username }} 👋</h2>
+  <p class="text-gray-600 mt-1">Email: {{ user.email }} | Phone: {{ user.phone }}</p>
+
+  <!-- Book Again Button -->
+  <a href="{{ url_for('main.hotel_list') }}"
+     class="inline-block mt-4 bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg shadow">
+    Book a New Room
+  </a>
+</section>
+
+<!-- Bookings -->
+<section class="max-w-5xl mx-auto mt-10 bg-white p-6 rounded-xl shadow-xl">
+  <h3 class="text-2xl font-semibold text-pink-700 mb-4">Your Bookings</h3>
+  {% if bookings %}
+    <ul class="space-y-4">
+      {% for booking in bookings %}
+        <li class="p-4 border rounded-lg bg-purple-50">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div>
+              <p><strong>Hotel:</strong> {{ booking.room.hotel.name }} ({{ booking.room.hotel.location }})</p>
+              <p><strong>Room:</strong> {{ booking.room.room_type }}</p>
+              <p><strong>Dates:</strong> {{ booking.check_in }} → {{ booking.check_out }}</p>
+              <p><strong>Price:</strong> ₹{{ booking.room.price }}</p>
+            </div>
+            <div class="text-right">
+              <a href="{{ url_for('main.generate_bill', booking_id=booking.id) }}"
+                 class="inline-block text-white bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded">
+                Download Bill
+              </a>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-500">You haven't made any bookings yet. Click above to make one 💖</p>
+  {% endif %}
+</section>
+
+</body>
+</html>
